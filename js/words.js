@@ -1,0 +1,196 @@
+// Jayden's Spell Bee Trainer - Category 3 (500 Words)
+// Grouped into 10 Sets of 50 Words each
+
+const RAW_WORDS = [
+  "ABDICATE", "ABERRATION", "ABHOR", "ABJURE", "ABLUTION",
+  "ABNEGATION", "ABSTRACT", "ACCOLADE", "ACCUSATION", "ACCUSE",
+  "ACQUIESCENCE", "ACUMEN", "ADAPT", "ADEPT", "ADEPT",
+  "ADHERE", "ADHERENT", "ADLIB", "ADMONISH", "ADOLESCENT",
+  "ADORATION", "ADROIT", "AGILE", "ALBEIT", "ALDERMAN",
+  "ALLEVIATE", "ALMSGIVING", "AMBIENCE", "AMBIGUOUS", "AMICABLE",
+  "AMPLIFY", "ANATHEMA", "ANEURYSM", "ANGST", "ANODYNE",
+  "ANONYMOUS", "APOCRYPHAL", "APOTHEOSIS", "APPALOOSA", "ARBITRARY",
+  "ARCHON", "ARTIFICE", "ASSERTIVE", "ATHEISM", "AUSPICIOUS",
+  "AUSTERE", "AUTHENTIC", "AUTONOMY", "AVERSION", "AVOCATION",
+  "AYACAHUITE", "BACCHIUS", "BALDERDASH", "BALLAST", "BANAL",
+  "BANDICOOT", "BANTER", "BARBARIC", "BARRAGE", "BASTION",
+  "BEHEST", "BEMOAN", "BENEDICT", "BENEVOLENT", "BENIGN",
+  "BEQUEATH", "BESIEGE", "BETROTH", "BILLBOARD", "BIPARTISAN",
+  "BLOCK", "BLOUSON", "CABOTAGE", "CANTANKEROUS", "CARICATURE",
+  "CASSEROLE", "CATAFALQUE", "CATASTROPHE", "CATHARTIC", "CAVALRY",
+  "CENSURE", "CERNUOUS", "CHARCUTERIE", "CHAUVINISM", "CHRONOLOGICAL",
+  "CHURLISH", "CIRCUITOUS", "CLEMENCY", "CLICHE", "CNEMIDOCOPTES",
+  "COALESCE", "COERCE", "COHERENCE", "COHERENT", "COLLATERAL",
+  "COLONEL", "COMPENDIUM", "COMPLIANCE", "CONCEIVED", "CONDUIT",
+  "CONFLUENCE", "CONGENER", "CONGRUENT", "CONJECTURE", "CONSCIOUSNESS",
+  "CONSCRIPT", "CONSTITUENCY", "CONSTRAINT", "CONSTRICTED", "CONTROVERSIAL",
+  "CORYBANTIC", "COUP", "CREDENCE", "CRIMINOLOGY", "CRUSADE",
+  "CRUSTACEOLOGY", "CURSORY", "CYMOTRICHOUS", "CYNOSURE", "DAHLIA",
+  "DALLIANCE", "DALMATIAN", "DAMASK", "DEARTH", "DEBUT",
+  "DECATHLON", "DECEPTIVE", "DECIPHER", "DEFIBRILLATOR", "DEFLECTED",
+  "DEGENERATE", "DEIFICATION", "DEMARCATION", "DEMOBILIZATION", "DENIZEN",
+  "DENOUNCE", "DENOUNCE", "DETERIORATE", "DEVIOUS", "DIFFIDENCE",
+  "DILIGENCE", "DISCERNING", "DISCERNMENT", "DISCHARGE", "DISCRIMINATION",
+  "DISDAINFFUL", "DISINFECT", "DISINTEGRATE", "DISPARITY", "DISPEL",
+  "DISRUPTION", "DIVERSION", "DOSSIER", "DOUBLOON", "DOWDY",
+  "DRAHTHAAR", "DROUGHT", "DUNCE", "DWINDLE", "DZUNGAR",
+  "EAVESDROP", "ELECTROCUTION", "ELEVATION", "ELOQUENCE", "ELUSIVE",
+  "ELYSIAN", "EMBELLISH", "EMOLLIENT", "EMPHATIC", "ENCUMBER",
+  "ENCYCLOPEDIA", "ENDEAVOUR", "ENDEAVOUR", "ENTOMOLOGIST", "ENTOMOLOGIST",
+  "EPILEPTIC", "EQUANIMITY", "EQUANIMITY", "EQUATORIAL", "EQUIVOCAL",
+  "ERADICATE", "ERRATIC", "ERUDITE", "ERUDITE", "ERYSIPELAS",
+  "ESPLANADE", "ESURIENT", "EUCLIDEAN", "EULERIAN", "EXECRATE",
+  "EXEMPLARY", "EXONERATE", "EXPATIATE", "EXTRAVAGANT", "FASTIDIOUS",
+  "FINANCIER", "FINESSE", "FISSURE", "FLAGRANT", "FLIPPANCY",
+  "FLUCTUATE", "FLUIDITY", "FORFEIT", "GALLINACEOUS", "GASCONADE",
+  "GINGIVITIS", "GNEISSOID", "GOBBLEDEGOOK", "GUILLOTINE", "HAECCEITAS",
+  "HEREDITARY", "HILARIOUS", "HOROLOGIST", "HORRENDOUS", "HORTICULTURE",
+  "HOSPITALITY", "HYDRAULICS", "HYPERTENSION", "HYPNOTIC", "HYPOTHESIS",
+  "ICONOCLAST", "ILLUSTRIOUS", "IMMINENT", "IMMOBILIZE", "IMPASSIVE",
+  "IMPEDE", "IMPERTURBABLE", "IMPLICITLY", "IMPUDENCE", "INADEQUATE",
+  "INAUGURATE", "INCEPTION", "INCESSANT", "INCIDENTAL", "INCOHERENT",
+  "INCONSISTENT", "INCUMBENT", "INDEFINABLE", "INDIGENOUS", "INFERNAL",
+  "INFERRED", "INFILTRATE", "INFLUENTIAL", "INGREDIENT", "INHERITANCE",
+  "INHIBITION", "INIQUITY", "INOSCULATE", "INSCRUTABLE", "INSINCERE",
+  "INSINCERITY", "INSINUATION", "INSISTENT", "INSOLUBLE", "INTERMITTENT",
+  "INTERNECINE", "INTERRUPT", "INTREPID", "INTRINSIC", "INVECTIVE",
+  "INVESTITURE", "IRASCIBLE", "IRIDESCENT", "IRKSOME", "JACKASSERIES",
+  "JUNIPER", "JUNKER", "JURISPRUDENCE", "JUROR", "JUSTIFICATION",
+  "JUVENESCENCE", "JUXTAPOSE", "KALEIDOSCOPE", "KINDERGARTEN", "KINDRED",
+  "KINEMATICS", "KIOSK", "KLUTZ", "KNAIDLACH", "KNAVE",
+  "KNICKERS", "KNUCKLE", "LABORIOUS", "LACHRYMAL", "LACHRYMOSE",
+  "LACKADAISICAL", "LACUSTRINE", "LANGUISH", "LASSITUDE", "LATITUDE",
+  "LAXATIVE", "LEGALIZE", "LEGITIMACY", "LEISURABLE", "LETHARGIC",
+  "LEUKAEMIA", "LEVITY", "LEXICAL", "LINGUISTIC", "LITIGATOR",
+  "LITTORAL", "LONGEVITY", "LONGITUDE", "LUBRICATE", "LUCRATIVE",
+  "LUGUBRIOUS", "LUNACY", "LURID", "LYRICAL", "MACABRE",
+  "MACHICOLATE", "MACHINATE", "MAISONNETTE", "MARMALADE", "MARTINET",
+  "MARTYR", "MASSACRE", "MATRIARCH", "MAUSOLEUM", "MAYHEM",
+  "MELANCHOLY", "MELODRAMATIC", "MEME", "MENDICANT", "MEPHITIC",
+  "MERCENARY", "MERINO", "METICULOUSLY", "MILITIA", "MINNOW",
+  "MIRAGE", "MISANTHROPE", "MLECHCHHA", "MONASTERY", "MORATORIUM",
+  "MOROSE", "MOTLEY", "MURRAYA", "MUTINOUS", "MYXOSPORIDIIDA",
+  "NAÏVE", "NAPALM", "NARCISSIST", "NARCOLEPSY", "NAUSEOUS",
+  "NEUTER", "NEUTRALITY", "NEVITABLE", "NGWEE", "NICHE",
+  "NOCTURNAL", "NUANCE", "OBDURATE", "OBLIQUE", "OBSCENITY",
+  "OMELETTE", "OMNIPOTENT", "OMNIVOROUS", "ONSLAUGHT", "OPOSSUM",
+  "OPULENCE", "ORDONNANCE", "ORNAMENT", "ORTHOGRAPHY", "OSTENTATIOUS",
+  "OVATION", "OVERBEARING", "OXYMORON", "PAGEANT", "PAGENT",
+  "PALAMA", "PANACEA", "PANACEA", "PANTHEON", "PARADIGM",
+  "PARALLAX", "PARALYSIS", "PARANOIA", "PATRIARCH", "PAUCITY",
+  "PECCADILLOS", "PENDELOQUE", "PENICILLIN", "PEREGRINATION", "PERGOLA",
+  "PERJURY", "PERNICIOUS", "PERPETUITY", "PERSPICACIOUS", "PERTINACIOUS",
+  "PETTIFOGGING", "PFEFFERNUSS", "PHALAENOPSID", "PHTHALEIN", "PHTHISIS",
+  "PIERCING", "PRETENDER", "PRIMER", "PROSCIUTTO", "PSCHENT",
+  "PSEPHOLOGY", "PSITTACEOUS", "PTERODACTYL", "QIGONG", "QUADRILLION",
+  "QUAGMIRE", "QUAY", "QUIBBLE", "QUINQUENNIAL", "QUINTET",
+  "QUIRKY", "RAFFINEMENT", "RAPPEL", "RAPPORT", "RATCHET",
+  "REPRISAL", "RESERVOIR", "RESILIENCE", "RESPLENDENT", "RETINUE",
+  "RHATHYMIA", "RHETORIC", "ROUSSEAUIAN", "SABOTEUR", "SANGUINE",
+  "SAXOPHONE", "SCALPEL", "SCRUPLE", "SEPHARDIC", "SEQUOIA",
+  "SERAGLIO", "SKEWER", "SMARAGDINE", "SOLIPSISM", "STICHOMYTHIA",
+  "STROMUHR", "SUDORIFIC", "SUFFRUTESCENT", "SURVEILLANCE", "SYBARITE",
+  "TABARD", "TALISMAN", "TANTALIZE", "TANTAMOUNT", "TAPESTRY",
+  "TAROT", "TAUTOLOGY", "TEETHE", "TERATOLOGY", "THEATRICAL",
+  "THOUGHTFUL", "THWART", "TIRADE", "TITTLE", "TITULAR",
+  "TOCSIN", "TORPEDO", "TORTUOUS", "TRACHEA", "TRANSITIONAL",
+  "TRANSLUCENT", "TREACHEROUS", "TRIENNIUM", "TROGLODYTE", "TROPHYISM",
+  "TRUCULENT", "TRYST", "TUMULT", "TUNDRA", "TURGID",
+  "TYPHOON", "TYRO", "UBIQUITY", "ULTERIOR", "UMBRAGE",
+  "UNBEARABLE", "UNGUARDED", "UNGUENT", "UNIFORM", "VAGARY",
+  "VALEDICTORY", "VIBRATO", "VICHYSSOISE", "VINDICATE", "VIOLA",
+  "VITAL", "VOLANT", "VOLUMETRIC", "VORACIOUS", "WADDLING",
+  "WAFFLE", "WALTZ", "WAPITI", "WASSAIL", "WISTERIA",
+  "WIZENED", "WOODCHUCK", "WRECKAGE", "ZUGZWANG", "ZUURVELDT"
+];
+
+// Phonetic and lowercase pronunciation dictionary
+// Prevents speech synthesis engines from treating unfamiliar words or acronym-like words as initialisms (alphabet-by-alphabet)
+const PRONUNCIATION_MAP = {
+  // Short words that speech engines treat as acronyms when uppercase
+  "ADLIB": "ad lib",
+  "COUP": "koo",
+  "MEME": "meem",
+  "NGWEE": "engwee",
+  "QUAY": "kee",
+  "CLICHE": "cliché",
+
+  // Sakshi contest list typos - pronounced correctly instead of spelling letter-by-letter
+  "DISDAINFFUL": "disdainful",  // Contest list #146 has double 'F'
+  "PAGENT": "pageant",          // Contest list #370 typo for pageant
+  "NEVITABLE": "inevitable",    // Contest list #348 typo for inevitable
+
+  // Words with silent letters, consonant clusters, or Greek/foreign roots
+  "CNEMIDOCOPTES": "nemidocoptes",
+  "HAECCEITAS": "hekseetas",
+  "MYXOSPORIDIIDA": "myxosporidiida",
+  "MLECHCHHA": "mlechha",
+  "PSCHENT": "skent",
+  "PSEPHOLOGY": "seefology",
+  "PSITTACEOUS": "sitaceous",
+  "PTERODACTYL": "terodactyl",
+  "PHTHISIS": "tisis",
+  "PHTHALEIN": "thaleen",
+  "PFEFFERNUSS": "pfeffernoos",
+  "PHALAENOPSID": "falaynopsid",
+  "QIGONG": "chee gong",
+  "ZUGZWANG": "tsoog tsvang",
+  "ZUURVELDT": "zoorfeldt",
+  "DZUNGAR": "dzoongar",
+  "DRAHTHAAR": "drahtaar",
+  "KNAIDLACH": "knaydlaakh",
+  "EULERIAN": "oilerian",
+  "GNEISSOID": "nysoid",
+  "BACCHIUS": "backius",
+  "NAÏVE": "naive",
+  "NAIVE": "naive"
+};
+
+// Structured dataset
+const WORDS_DATA = RAW_WORDS.map((word, index) => {
+  const id = index + 1;
+  const setNumber = Math.ceil(id / 50);
+  const normalizedKey = word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toUpperCase();
+  // Guaranteed whole-word spoken pronunciation string (always lowercase or phonetic)
+  const spoken = (PRONUNCIATION_MAP[normalizedKey] || normalizedKey.toLowerCase()).toLowerCase();
+
+  return {
+    id: id,
+    word: word,           // Display word for Jayden to read and practice spelling
+    cleanWord: normalizedKey,
+    spokenWord: spoken,   // What the speech synthesizer will say
+    set: setNumber,
+    length: word.length
+  };
+});
+
+// Grouped by sets (Set 1 through 10, 50 words each)
+const SETS_DATA = Array.from({ length: 10 }, (_, i) => {
+  const setNumber = i + 1;
+  const startId = (setNumber - 1) * 50 + 1;
+  const endId = setNumber * 50;
+  return {
+    number: setNumber,
+    name: `Set ${setNumber}`,
+    title: `Words ${startId} – ${endId}`,
+    range: `${startId} – ${endId}`,
+    startId: startId,
+    endId: endId,
+    words: WORDS_DATA.filter(w => w.set === setNumber)
+  };
+});
+
+// Helper functions for words
+window.SpellBeeData = {
+  raw: RAW_WORDS,
+  allWords: WORDS_DATA,
+  sets: SETS_DATA,
+  pronunciations: PRONUNCIATION_MAP,
+  getSet: (setNumber) => SETS_DATA.find(s => s.number === setNumber) || SETS_DATA[0],
+  getWordById: (id) => WORDS_DATA.find(w => w.id === id),
+  getSpokenWord: (wordOrKey) => {
+    if (!wordOrKey) return '';
+    const key = String(wordOrKey).normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toUpperCase();
+    return (PRONUNCIATION_MAP[key] || key.toLowerCase()).toLowerCase();
+  }
+};

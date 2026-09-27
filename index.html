@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=aadb90da-0136-4c16-acf7-cf8f6e93dc51
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jayden's Spell Bee Trainer - Sakshi Category 3</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              200: '#fde68a',
+              300: '#fcd34d',
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+            },
+            royal: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              500: '#3b82f6',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-amber-50/40 text-slate-800 antialiased flex flex-col min-h-screen">
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Top App Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-amber-200/80 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Brand & Mascot -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="app.switchTab('study')">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center shadow-md shadow-amber-500/20 text-2xl animate-float select-none">
+          🐝
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-heading font-bold text-lg sm:text-xl text-royal-900 tracking-tight leading-tight">
+              Jayden's Spell Bee
+            </h1>
+            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">
+              Sakshi Cat 3
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 font-medium hidden sm:block">500 Championship Words • Indian English (en-IN)</p>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center space-x-2">
+        <button id="navStudyDesktop" onclick="app.switchTab('study')" 
+          class="px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center space-x-2 bg-amber-500 text-white shadow-sm shadow-amber-500/25">
+          <span>📖</span>
+          <span>Word Study</span>
+        </button>
+        <button id="navDictationDesktop" onclick="app.switchTab('dictation')" 
+          class="px-4 py-2 rounded-xl font-bold text-sm text-slate-600 hover:text-royal-900 hover:bg-amber-100/60 transition-all flex items-center space-x-2">
+          <span>✍️</span>
+          <span>Spelling Test</span>
+        </button>
+        <button id="navStarredDesktop" onclick="app.switchTab('starred')" 
+          class="px-3.5 py-2 rounded-xl font-bold text-sm text-slate-600 hover:text-royal-900 hover:bg-amber-100/60 transition-all flex items-center space-x-1.5">
+          <span>⭐</span>
+          <span>Tricky Words</span>
+          <span id="desktopStarredBadge" class="bg-amber-200 text-amber-900 text-xs px-2 py-0.5 rounded-full hidden">0</span>
+        </button>
+      </nav>
+
+      <!-- Action Tools: Settings & Audio test -->
+      <div class="flex items-center space-x-2">
+        <button onclick="app.openSettingsModal()" title="Voice & Speech Settings"
+          class="p-2.5 rounded-xl text-slate-600 hover:text-royal-900 hover:bg-amber-100/70 active:scale-95 transition flex items-center space-x-1 border border-amber-200/80 bg-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          <span class="text-xs font-bold hidden sm:inline">Settings</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-4 md:py-6 pb-24 md:pb-8">
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: WORD STUDY -->
+    <!-- ================================================================= -->
+    <section id="tabStudy" class="space-y-4">
+      
+      <!-- Top Banner / Set Selector Card -->
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-amber-200/80 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-100/70 px-2.5 py-1 rounded-lg">
+                Word Study Mode
+              </span>
+              <span id="studySetBadge" class="text-xs font-bold text-royal-900 bg-blue-100/70 px-2.5 py-1 rounded-lg">
+                Set 1 (Words 1–50)
+              </span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-heading font-bold text-royal-950 mt-1">
+              Browse & Learn Pronunciations
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+              Tap any speaker button to hear the correct Indian English (<code class="text-amber-700 font-semibold">en-IN</code>) pronunciation.
+            </p>
+          </div>
+
+          <!-- Fast Action: Practice This Set Now Button -->
+          <div class="flex items-center gap-2">
+            <button onclick="app.startDictationFromStudy()" 
+              class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-royal-800 to-royal-900 text-white font-bold rounded-2xl shadow-md shadow-royal-900/20 hover:from-royal-900 hover:to-royal-950 active:scale-95 transition flex items-center justify-center space-x-2 text-sm">
+              <span>🎙️</span>
+              <span>Test This Set</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Set Selector Pill Bar (1 to 10) -->
+        <div class="mt-4 pt-4 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-bold text-slate-600 uppercase tracking-wide flex items-center space-x-1.5">
+              <span>Select Word Set (50 words each):</span>
+            </label>
+            <span class="text-xs font-semibold text-amber-600">10 Sets Available</span>
+          </div>
+
+          <!-- Horizontal Scrollable Set Buttons -->
+          <div id="setSelectorGrid" class="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
+            <!-- Dynamically populated Set 1 .. Set 10 pills -->
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="mt-3 flex flex-col sm:flex-row gap-2">
+          <div class="relative flex-grow">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </span>
+            <input id="searchInput" type="text" placeholder="Search words in current set or all 500..." 
+              oninput="app.handleSearch(this.value)"
+              class="w-full pl-10 pr-9 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition" />
+            <button id="clearSearchBtn" onclick="app.clearSearch()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden">
+              ✕
+            </button>
+          </div>
+
+          <div class="flex gap-2">
+            <button id="autoplayBtn" onclick="app.toggleAutoplay()" 
+              class="px-3.5 py-2 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 text-xs font-bold transition flex items-center space-x-1.5 whitespace-nowrap active:scale-95">
+              <span id="autoplayIcon">▶️</span>
+              <span id="autoplayText">Auto Play Set</span>
+            </button>
+            <button onclick="app.speakAllFiltered()" title="Pronounce First Filtered Word"
+              class="px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-600 transition flex items-center space-x-1">
+              <span>🔊</span>
+              <span class="hidden sm:inline">First</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Indian English Voice & Pronunciation Quick Bar -->
+        <div class="mt-3.5 pt-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5 bg-amber-50/70 p-3 rounded-2xl border border-amber-200/70">
+          <div class="flex items-center space-x-2 flex-grow sm:flex-grow-0">
+            <span class="text-base select-none">🇮🇳</span>
+            <label for="quickVoiceSelect" class="text-xs font-bold text-amber-950 uppercase tracking-wider whitespace-nowrap">
+              Voice:
+            </label>
+            <select id="quickVoiceSelect" onchange="app.handleVoiceChange(this.value)" 
+              class="py-1.5 px-3 rounded-xl border border-amber-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm max-w-[210px] sm:max-w-xs truncate">
+              <!-- Dynamically populated with Indian voices: Tara, Rishi, Aman, Neerja, etc. -->
+            </select>
+            <button onclick="app.testVoiceNow()" title="Test current Indian voice" 
+              class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center space-x-1">
+              <span>🔊</span>
+              <span>Test</span>
+            </button>
+          </div>
+
+          <!-- Speed Pill Quick Toggles -->
+          <div class="flex items-center space-x-1.5">
+            <span class="text-[11px] font-bold text-amber-900/80 mr-1">Cadence:</span>
+            <button id="speedPillSlow" onclick="app.setQuickSpeed(0.72)" 
+              class="px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-300/80 text-amber-900 hover:bg-amber-100 bg-white transition active:scale-95">
+              🐢 Slow
+            </button>
+            <button id="speedPillClear" onclick="app.setQuickSpeed(0.90)" 
+              class="px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-500 text-white bg-amber-500 shadow-sm transition active:scale-95">
+              ✨ Championship (0.9x)
+            </button>
+            <button id="speedPillNormal" onclick="app.setQuickSpeed(1.00)" 
+              class="px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-300/80 text-amber-900 hover:bg-amber-100 bg-white transition active:scale-95">
+              ⚡ Normal (1.0x)
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Word List Statistics & Count -->
+      <div class="flex items-center justify-between px-1 text-xs text-slate-500 font-semibold">
+        <div id="wordCountLabel">Showing 50 words</div>
+        <div class="flex items-center space-x-3">
+          <span class="flex items-center space-x-1 text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span>Tap speaker to listen</span>
+          </span>
+          <span class="flex items-center space-x-1 text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-amber-300"></span>
+            <span>Star tricky words</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Interactive 50-Word Grid/List -->
+      <div id="wordsListContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
+        <!-- Word Cards Rendered dynamically -->
+      </div>
+
+      <!-- Empty Search State -->
+      <div id="noWordsState" class="hidden bg-white rounded-3xl p-8 text-center border border-dashed border-amber-300">
+        <div class="text-4xl mb-2">🔍</div>
+        <h3 class="font-heading font-bold text-slate-700 text-lg">No matching words found</h3>
+        <p class="text-xs text-slate-500 mt-1">Try checking another set or clearing your search term.</p>
+        <button onclick="app.clearSearch()" class="mt-3 px-4 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-bold">
+          Clear Search
+        </button>
+      </div>
+
+    </section>
+
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: DICTATION PRACTICE (AUDIO-ONLY TEST MODE FOR PAPER) -->
+    <!-- ================================================================= -->
+    <section id="tabDictation" class="hidden space-y-4">
+      
+      <!-- Screen 2A: Setup Mode Selection (Before starting) -->
+      <div id="dictationSetupScreen" class="bg-white rounded-3xl p-5 sm:p-7 border border-amber-200/80 shadow-sm max-w-2xl mx-auto">
+        
+        <div class="text-center max-w-md mx-auto">
+          <div class="inline-flex p-3 bg-amber-100 rounded-2xl text-3xl mb-3 shadow-inner">
+            ✍️
+          </div>
+          <h2 class="text-2xl font-heading font-bold text-royal-950">
+            Interactive Spelling Test
+          </h2>
+          <p class="text-sm text-slate-500 mt-1">
+            Listen to the Indian English pronunciation, type in each word, and get instant score validation with error analysis!
+          </p>
+        </div>
+
+        <!-- Dictation Configuration Form -->
+        <div class="mt-6 space-y-5">
+          
+          <!-- 1. Choose Words to Dictate: Sets vs Custom Range -->
+          <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-200">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                1. Choose Words to Dictate
+              </label>
+
+              <!-- Mode Toggle: Sets vs Custom Range -->
+              <div class="inline-flex rounded-xl bg-slate-200/80 p-1 text-xs font-bold self-start sm:self-auto">
+                <button type="button" id="dictModeSetBtn" onclick="app.setDictationSelectionType('set')"
+                  class="px-3 py-1.5 rounded-lg transition-all bg-white text-royal-900 shadow-sm font-extrabold">
+                  📦 Sets (1–10)
+                </button>
+                <button type="button" id="dictModeCustomBtn" onclick="app.setDictationSelectionType('custom')"
+                  class="px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-royal-900 font-bold">
+                  🎯 Custom Range (1–500)
+                </button>
+              </div>
+            </div>
+
+            <!-- Panel A: Standard 10 Sets Picker -->
+            <div id="dictationSetPickerPanel">
+              <div id="dictationSetPickerGrid" class="grid grid-cols-5 gap-2">
+                <!-- Set selector buttons 1-10 populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Panel B: Custom Range Selector (1 to 500) -->
+            <div id="dictationCustomRangePanel" class="hidden space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- From Input -->
+                <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <label for="customRangeFrom" class="text-[11px] font-bold text-slate-600 uppercase">
+                      From Word # (1 to 500)
+                    </label>
+                    <span class="text-[10px] text-slate-400">Start index</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button type="button" onclick="app.adjustCustomRange('from', -5)" 
+                      class="px-2 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition" title="Decrease by 5">
+                      -5
+                    </button>
+                    <input type="number" id="customRangeFrom" min="1" max="500" value="1" 
+                      onchange="app.handleCustomRangeInput()" oninput="app.handleCustomRangeInput()"
+                      class="w-full text-center font-heading font-black text-lg text-royal-900 border border-amber-300 rounded-lg py-1 focus:ring-2 focus:ring-amber-400 focus:outline-none bg-amber-50/40">
+                    <button type="button" onclick="app.adjustCustomRange('from', 5)" 
+                      class="px-2 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition" title="Increase by 5">
+                      +5
+                    </button>
+                  </div>
+                </div>
+
+                <!-- To Input -->
+                <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <label for="customRangeTo" class="text-[11px] font-bold text-slate-600 uppercase">
+                      To Word # (1 to 500)
+                    </label>
+                    <span class="text-[10px] text-slate-400">End index</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button type="button" onclick="app.adjustCustomRange('to', -5)" 
+                      class="px-2 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition" title="Decrease by 5">
+                      -5
+                    </button>
+                    <input type="number" id="customRangeTo" min="1" max="500" value="50" 
+                      onchange="app.handleCustomRangeInput()" oninput="app.handleCustomRangeInput()"
+                      class="w-full text-center font-heading font-black text-lg text-royal-900 border border-amber-300 rounded-lg py-1 focus:ring-2 focus:ring-amber-400 focus:outline-none bg-amber-50/40">
+                    <button type="button" onclick="app.adjustCustomRange('to', 5)" 
+                      class="px-2 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition" title="Increase by 5">
+                      +5
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Presets -->
+              <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                <span class="text-[11px] font-bold text-slate-400 mr-1">Quick Select:</span>
+                <button type="button" onclick="app.setQuickRange(1, 25)" class="px-2.5 py-1 bg-white hover:bg-amber-100/70 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold text-slate-700 transition">1–25 (Quick)</button>
+                <button type="button" onclick="app.setQuickRange(1, 50)" class="px-2.5 py-1 bg-white hover:bg-amber-100/70 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold text-slate-700 transition">1–50</button>
+                <button type="button" onclick="app.setQuickRange(1, 100)" class="px-2.5 py-1 bg-white hover:bg-amber-100/70 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold text-slate-700 transition">1–100</button>
+                <button type="button" onclick="app.setQuickRange(51, 150)" class="px-2.5 py-1 bg-white hover:bg-amber-100/70 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold text-slate-700 transition">51–150</button>
+                <button type="button" onclick="app.setQuickRange(101, 200)" class="px-2.5 py-1 bg-white hover:bg-amber-100/70 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold text-slate-700 transition">101–200</button>
+                <button type="button" onclick="app.setQuickRange(201, 300)" class="px-2.5 py-1 bg-white hover:bg-amber-100/70 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold text-slate-700 transition">201–300</button>
+                <button type="button" onclick="app.setQuickRange(1, 500)" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 border border-amber-300 rounded-lg text-[11px] font-extrabold text-amber-900 transition">🌟 All 1–500</button>
+              </div>
+            </div>
+
+            <!-- Live Summary Badge -->
+            <div class="mt-3 text-center">
+              <span id="selectedSetSummary" class="text-xs font-bold text-royal-800 bg-amber-100/70 px-3.5 py-1.5 rounded-full border border-amber-300 shadow-2xs inline-block">
+                Selected: Set 1 (Words 1 – 50 • 50 Words)
+              </span>
+            </div>
+          </div>
+
+          <!-- 2. Randomize Word Order Toggle (Shuffle) -->
+          <div class="bg-gradient-to-r from-amber-50/90 via-white to-amber-50/50 rounded-2xl p-4 border border-amber-200/90 shadow-2xs flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-400 text-royal-950 flex items-center justify-center text-xl shadow-sm shrink-0">
+                🔀
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-royal-900">
+                    Randomize Word Order (Shuffle)
+                  </span>
+                  <span id="shuffleStatusBadge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-200 text-slate-700">
+                    Off (Sequential)
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  Dictate words in random surprise order instead of alphabetical sequence. Great for real contest practice!
+                </p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" id="dictationShuffleToggle" onchange="app.handleShuffleToggle()" class="sr-only peer">
+              <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+            </label>
+          </div>
+
+          <!-- Pause Interval Settings -->
+          <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-200/60">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-700">
+                3. Time to write each word (Pause Interval)
+              </label>
+              <span id="dictationPauseLabel" class="text-sm font-bold text-amber-700 bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">
+                12 seconds
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">
+              Jayden will have this many seconds to write before the app announces the next word.
+            </p>
+            
+            <div class="grid grid-cols-5 gap-2">
+              <button type="button" onclick="app.setDictationPause(0)" class="pause-btn py-2 rounded-xl text-xs font-bold border border-slate-200 bg-white text-slate-700 hover:border-amber-400" data-seconds="0">Untimed</button>
+              <button type="button" onclick="app.setDictationPause(10)" class="pause-btn py-2 rounded-xl text-xs font-bold border border-slate-200 bg-white text-slate-700 hover:border-amber-400" data-seconds="10">10s</button>
+              <button type="button" onclick="app.setDictationPause(15)" class="pause-btn py-2 rounded-xl text-xs font-bold border border-amber-400 bg-amber-400 text-royal-950 font-black" data-seconds="15">15s (Recom.)</button>
+              <button type="button" onclick="app.setDictationPause(20)" class="pause-btn py-2 rounded-xl text-xs font-bold border border-slate-200 bg-white text-slate-700 hover:border-amber-400" data-seconds="20">20s</button>
+              <button type="button" onclick="app.setDictationPause(30)" class="pause-btn py-2 rounded-xl text-xs font-bold border border-slate-200 bg-white text-slate-700 hover:border-amber-400" data-seconds="30">30s</button>
+            </div>
+          </div>
+
+          <!-- Pronunciation & Repeat Settings -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1 bg-slate-50 rounded-2xl p-3 border border-slate-200 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-slate-700 block">Say word twice automatically?</span>
+                <span class="text-[11px] text-slate-500">Repeats word once after 2 seconds</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="dictationDoubleSpeak" class="sr-only peer">
+                <div class="w-10 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+              </label>
+            </div>
+
+            <div class="flex-1 bg-slate-50 rounded-2xl p-3 border border-slate-200 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-slate-700 block">Sound bell chime</span>
+                <span class="text-[11px] text-slate-500">Soft bell before each word</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="dictationChimeToggle" checked class="sr-only peer">
+                <div class="w-10 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Start Practice Big Button -->
+          <div class="pt-2">
+            <button onclick="app.startDictationLoop()" 
+              class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-heading font-bold text-lg rounded-2xl shadow-lg shadow-amber-500/30 active:scale-[0.98] transition flex items-center justify-center space-x-3">
+              <span>🚀</span>
+              <span>Start Interactive Spelling Test</span>
+            </button>
+            <p class="text-[11px] text-slate-400 text-center mt-2">
+              Type each word and press [Enter ↵] to advance. All answers are validated at the end!
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Screen 2B: Active Dictation Running Screen -->
+      <div id="dictationActiveScreen" class="hidden bg-white rounded-3xl p-5 sm:p-8 border border-amber-200/80 shadow-md max-w-2xl mx-auto space-y-6">
+        
+        <!-- Top Status Bar: Progress & Stop -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
+            <span id="activeSetTitle" class="text-xs font-bold uppercase tracking-wider text-royal-800">
+              Set 1 Practice
+            </span>
+          </div>
+
+          <!-- End Test Early Button -->
+          <button onclick="app.confirmStopDictation()" 
+            class="text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-xl border border-rose-200 transition">
+            ✕ Finish & Validate Test
+          </button>
+        </div>
+
+        <!-- Big Progress Indicator -->
+        <div>
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-1.5">
+            <span id="dictationProgressText">Word 1 of 50</span>
+            <span id="dictationProgressPercent">2%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+            <div id="dictationProgressBar" class="bg-gradient-to-r from-amber-400 to-amber-500 h-3 rounded-full transition-all duration-300" style="width: 2%;"></div>
+          </div>
+        </div>
+
+        <!-- The Interactive Spelling Card -->
+        <div class="relative bg-gradient-to-b from-amber-50/80 to-amber-100/40 rounded-3xl p-5 sm:p-7 border-2 border-amber-300 text-center flex flex-col items-center justify-center shadow-inner">
+          
+          <!-- Number Tags -->
+          <div class="inline-flex items-center space-x-2 bg-royal-900 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-sm mb-2.5">
+            <span id="activeDictationSeqBadge">Word #1</span>
+            <span class="opacity-50 text-xs">•</span>
+            <span class="text-[11px] font-normal opacity-90">Contest Word #<span id="activeWordId">1</span></span>
+          </div>
+
+          <!-- Secret Word / Audio Prompt Display -->
+          <div class="min-h-[50px] flex flex-col items-center justify-center w-full">
+            <div id="hiddenWordBox" class="flex flex-col items-center">
+              <p class="font-heading font-extrabold text-royal-950 text-base sm:text-lg flex items-center gap-1.5">
+                <span>🎧</span>
+                <span>Listen to the word & type your spelling:</span>
+              </p>
+            </div>
+
+            <!-- Revealed Word (If Jayden clicks Peek) -->
+            <div id="revealedWordBox" class="hidden my-1">
+              <span id="revealedWordText" class="text-2xl sm:text-3xl font-heading font-black text-royal-900 tracking-wider">
+                ABDICATE
+              </span>
+              <span class="block text-xs font-bold text-amber-700">👀 Word Peeked!</span>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE SPELLING INPUT BOX -->
+          <div class="w-full max-w-md mx-auto my-2.5">
+            <div class="relative">
+              <input type="text" id="spellingInput" 
+                autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+                placeholder="TYPE SPELLING HERE..." 
+                onkeydown="app.handleSpellingInputKey(event)"
+                oninput="app.handleSpellingInput(this.value)"
+                class="w-full text-center py-3.5 px-10 font-mono font-black text-xl sm:text-2xl uppercase tracking-widest bg-white border-2 border-amber-400 rounded-2xl shadow-inner focus:border-royal-800 focus:ring-4 focus:ring-amber-200 focus:outline-none transition text-royal-950 placeholder:text-slate-300 placeholder:font-sans placeholder:tracking-normal placeholder:font-bold placeholder:text-sm" />
+              
+              <!-- Clear Input Button -->
+              <button type="button" onclick="app.clearSpellingInput()" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 p-1 text-base font-bold transition">
+                ✕
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] text-slate-500 mt-1.5 px-2 font-semibold">
+              <span id="answeredStatusText">Press <kbd class="px-1.5 py-0.5 bg-slate-200 text-slate-800 rounded font-mono text-[10px]">Enter ↵</kbd> to submit</span>
+              <span id="typingLetterCount" class="font-mono text-amber-800 font-bold">0 letters</span>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons: Repeat Audio & Peek -->
+          <div class="flex items-center gap-2 mt-1">
+            <button onclick="app.repeatCurrentWord()" 
+              class="text-xs font-bold text-amber-900 bg-amber-200/80 hover:bg-amber-300 border border-amber-300 px-3.5 py-1.5 rounded-xl transition active:scale-95 flex items-center space-x-1.5 shadow-2xs">
+              <span>🔊</span>
+              <span>Repeat Audio</span>
+            </button>
+            <button id="peekWordBtn" onclick="app.togglePeekWord()" 
+              class="text-xs font-bold text-slate-600 hover:text-royal-800 bg-white/90 hover:bg-white border border-slate-200 px-3 py-1.5 rounded-xl transition active:scale-95 flex items-center space-x-1 shadow-2xs">
+              <span>👁️</span>
+              <span>Peek Spelling</span>
+            </button>
+          </div>
+
+          <!-- Timer & Pace Indicator -->
+          <div id="dictationTimerContainer" class="mt-4 flex flex-col items-center">
+            <div class="relative w-20 h-20 flex items-center justify-center">
+              <svg class="w-20 h-20 transform -rotate-90">
+                <circle cx="40" cy="40" r="34" stroke="#E2E8F0" stroke-width="6" fill="none"></circle>
+                <circle id="timerCircleRing" cx="40" cy="40" r="34" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" fill="none"
+                  stroke-dasharray="213.63" stroke-dashoffset="0" class="timer-ring-circle"></circle>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center select-none">
+                <span id="timerSecondsText" class="font-heading font-black text-xl text-royal-950">
+                  15
+                </span>
+                <span id="timerUnitText" class="text-[9px] font-bold text-slate-400 -mt-0.5">sec</span>
+              </div>
+            </div>
+            
+            <p id="timerStatusLabel" class="text-[11px] font-semibold text-slate-500 mt-1">
+              Time remaining...
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Big Dictation Controls (Large touch targets for kids) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+          
+          <!-- Repeat Word Button -->
+          <button onclick="app.repeatCurrentWord()" 
+            class="py-3.5 px-3 bg-amber-400 hover:bg-amber-500 text-royal-950 font-bold rounded-2xl shadow-md shadow-amber-400/20 active:scale-95 transition flex flex-col items-center justify-center text-center">
+            <span class="text-2xl mb-1">🔁</span>
+            <span class="text-xs uppercase tracking-wider font-extrabold">Repeat Word</span>
+            <span class="text-[10px] text-amber-900/80 hidden sm:inline">(Space)</span>
+          </button>
+
+          <!-- Pause / Resume Button -->
+          <button id="pauseResumeBtn" onclick="app.togglePauseResume()" 
+            class="py-3.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-2xl border border-slate-200 active:scale-95 transition flex flex-col items-center justify-center text-center">
+            <span id="pauseResumeIcon" class="text-2xl mb-1">⏸️</span>
+            <span id="pauseResumeText" class="text-xs uppercase tracking-wider font-extrabold">Pause Timer</span>
+            <span class="text-[10px] text-slate-400 hidden sm:inline">(P)</span>
+          </button>
+
+          <!-- Previous Word Button -->
+          <button onclick="app.prevWord()" 
+            class="py-3.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl border border-slate-200 active:scale-95 transition flex flex-col items-center justify-center text-center">
+            <span class="text-2xl mb-1">⏮️</span>
+            <span class="text-xs uppercase tracking-wider font-extrabold">Prev Word</span>
+            <span class="text-[10px] text-slate-400 hidden sm:inline">(←)</span>
+          </button>
+
+          <!-- Next Word Button -->
+          <button onclick="app.nextWord(true)" 
+            class="py-3.5 px-3 bg-royal-800 hover:bg-royal-900 text-white font-bold rounded-2xl shadow-md shadow-royal-900/20 active:scale-95 transition flex flex-col items-center justify-center text-center">
+            <span class="text-2xl mb-1">⏭️</span>
+            <span class="text-xs uppercase tracking-wider font-extrabold">Next Word</span>
+            <span class="text-[10px] text-blue-200 hidden sm:inline">(Enter ↵)</span>
+          </button>
+
+        </div>
+
+        <!-- Add to Starred directly during dictation -->
+        <div class="flex items-center justify-center pt-1">
+          <button id="dictationStarBtn" onclick="app.toggleActiveWordStar()" 
+            class="text-xs font-bold text-slate-500 hover:text-amber-600 flex items-center space-x-1.5 py-1 px-3 rounded-full hover:bg-amber-50 transition">
+            <span id="dictationStarIcon">☆</span>
+            <span id="dictationStarText">Mark this word as tricky</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Screen 2C: End of Set Summary & Self-Check Answer Sheet -->
+      <div id="dictationCompleteScreen" class="hidden bg-white rounded-3xl p-5 sm:p-8 border border-amber-200/80 shadow-lg max-w-3xl mx-auto space-y-6">
+        
+        <!-- Celebration Header & Score Card -->
+        <div class="text-center">
+          <div id="completionEmoji" class="inline-block text-5xl animate-bounce mb-2">🎉 🐝 🏆</div>
+          <h2 id="completionScoreTitle" class="text-3xl sm:text-4xl font-heading font-black text-royal-950">
+            Score: 50 / 50 (100%)
+          </h2>
+          <div class="mt-2">
+            <span id="completionEvaluationBadge" class="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+              🏆 Championship Gold Master!
+            </span>
+          </div>
+          <p id="completionSubtitle" class="text-xs sm:text-sm text-slate-500 mt-2 max-w-lg mx-auto">
+            Great job! Review your validated answers below with mistakes highlighted.
+          </p>
+        </div>
+
+        <!-- Three Score Stat Pills -->
+        <div class="grid grid-cols-3 gap-3 max-w-md mx-auto">
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-center shadow-2xs">
+            <span class="text-xs font-bold text-emerald-800 block">Correct</span>
+            <span id="scoreCorrectCount" class="font-heading font-black text-2xl text-emerald-700">0</span>
+          </div>
+          <div class="bg-rose-50 border border-rose-200 rounded-2xl p-3 text-center shadow-2xs">
+            <span class="text-xs font-bold text-rose-800 block">Mistakes</span>
+            <span id="scoreMistakeCount" class="font-heading font-black text-2xl text-rose-700">0</span>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-center shadow-2xs">
+            <span class="text-xs font-bold text-slate-600 block">Accuracy</span>
+            <span id="scoreAccuracyPercent" class="font-heading font-black text-2xl text-slate-800">0%</span>
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="flex flex-wrap items-center justify-center gap-2 pt-1 border-t border-b border-slate-100 py-4">
+          <button onclick="app.restartSameSetDictation()" 
+            class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs sm:text-sm shadow-sm transition active:scale-95 flex items-center space-x-1.5">
+            <span>🔄</span>
+            <span>Retest This Set</span>
+          </button>
+          
+          <button id="flagAllMistakesBtn" onclick="app.flagAllMistakes()" 
+            class="px-4 py-2 bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-300 font-bold rounded-xl text-xs sm:text-sm transition active:scale-95 flex items-center space-x-1.5">
+            <span>⭐</span>
+            <span>Add All Mistakes to Tricky Words</span>
+          </button>
+
+          <button id="nextSetPracticeBtn" onclick="app.startNextSetDictation()" 
+            class="px-4 py-2 bg-royal-800 hover:bg-royal-900 text-white font-bold rounded-xl text-xs sm:text-sm shadow-sm transition active:scale-95 flex items-center space-x-1.5">
+            <span>Next Set ➡️</span>
+          </button>
+
+          <button onclick="window.print()" 
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition active:scale-95 flex items-center space-x-1.5">
+            <span>🖨️</span>
+            <span>Print Report</span>
+          </button>
+        </div>
+
+        <!-- Filter Tabs & Sort Toolbar -->
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs font-bold text-slate-500 mb-3 px-1">
+            <!-- Filter Pills -->
+            <div class="inline-flex rounded-xl bg-slate-100 p-1 text-xs font-bold">
+              <button type="button" id="filterReviewAllBtn" onclick="app.setReviewFilter('all')" 
+                class="px-3 py-1.5 rounded-lg bg-white text-royal-950 shadow-xs font-extrabold transition">
+                All Words (<span id="filterCountAll">50</span>)
+              </button>
+              <button type="button" id="filterReviewMistakesBtn" onclick="app.setReviewFilter('mistakes')" 
+                class="px-3 py-1.5 rounded-lg text-rose-700 hover:text-rose-900 font-bold transition">
+                ❌ Mistakes (<span id="filterCountMistakes">0</span>)
+              </button>
+              <button type="button" id="filterReviewCorrectBtn" onclick="app.setReviewFilter('correct')" 
+                class="px-3 py-1.5 rounded-lg text-emerald-700 hover:text-emerald-900 font-bold transition">
+                ✅ Correct (<span id="filterCountCorrect">50</span>)
+              </button>
+            </div>
+
+            <!-- Sort Toggle -->
+            <div id="answerKeySortControls" class="inline-flex rounded-xl bg-slate-100 p-1 text-[11px] font-bold self-start sm:self-auto border border-slate-200">
+              <button type="button" id="sortDictationOrderBtn" onclick="app.setAnswerKeySort('dictation')" 
+                class="px-2.5 py-1 rounded-lg bg-white text-royal-950 shadow-xs font-extrabold transition">
+                📝 Test Order
+              </button>
+              <button type="button" id="sortWordIdBtn" onclick="app.setAnswerKeySort('id')" 
+                class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-royal-950 font-bold transition">
+                🔢 Word #
+              </button>
+            </div>
+          </div>
+
+          <!-- Validated Words Results List -->
+          <div id="selfCheckList" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[520px] overflow-y-auto pr-1">
+            <!-- Validated Word Cards Rendered Here -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: STARRED / TRICKY WORDS REVIEW -->
+    <!-- ================================================================= -->
+    <section id="tabStarred" class="hidden space-y-4">
+      
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-amber-200/80 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-2xl">⭐</span>
+              <h2 class="text-xl sm:text-2xl font-heading font-bold text-royal-950">
+                Jayden's Tricky Words
+              </h2>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+              Words you've flagged for extra practice. Master these to ace Sakshi Category 3!
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="practiceStarredBtn" onclick="app.startPracticeStarred()" 
+              class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs sm:text-sm shadow-sm transition active:scale-95 flex items-center space-x-1.5">
+              <span>🎙️</span>
+              <span>Dictate Tricky Words</span>
+            </button>
+            <button onclick="app.clearAllStarred()" 
+              class="px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold border border-rose-200 transition">
+              Clear All
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Starred Word List -->
+      <div id="starredWordsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Empty Starred State -->
+      <div id="emptyStarredState" class="hidden bg-white rounded-3xl p-10 text-center border border-amber-200/80">
+        <div class="text-5xl mb-3">🌟</div>
+        <h3 class="font-heading font-bold text-slate-800 text-lg">No tricky words yet!</h3>
+        <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          While studying or checking your dictation, tap the star icon on any difficult word to save it here.
+        </p>
+        <button onclick="app.switchTab('study')" class="mt-4 px-5 py-2 bg-royal-800 text-white rounded-xl text-xs font-bold hover:bg-royal-900 transition">
+          Browse Word Study
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ================================================================= -->
+  <!-- BOTTOM NAVIGATION BAR (Child-Friendly & Optimized for Mobile) -->
+  <!-- ================================================================= -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-t border-amber-200 shadow-lg safe-pb">
+    <div class="grid grid-cols-3 py-1 px-2">
+      
+      <!-- Tab 1: Study -->
+      <button id="navStudyMobile" onclick="app.switchTab('study')" 
+        class="flex flex-col items-center py-2 px-1 rounded-2xl text-amber-600 transition active:scale-95">
+        <span class="text-xl">📖</span>
+        <span class="text-[11px] font-bold mt-0.5">Word Study</span>
+      </button>
+
+      <!-- Tab 2: Dictation / Spelling Test -->
+      <button id="navDictationMobile" onclick="app.switchTab('dictation')" 
+        class="flex flex-col items-center py-2 px-1 rounded-2xl text-slate-400 transition active:scale-95">
+        <span class="text-xl">✍️</span>
+        <span class="text-[11px] font-bold mt-0.5">Spelling Test</span>
+      </button>
+
+      <!-- Tab 3: Starred / Review -->
+      <button id="navStarredMobile" onclick="app.switchTab('starred')" 
+        class="relative flex flex-col items-center py-2 px-1 rounded-2xl text-slate-400 transition active:scale-95">
+        <span class="text-xl">⭐</span>
+        <span class="text-[11px] font-bold mt-0.5">Tricky</span>
+        <span id="mobileStarredBadge" class="absolute top-1 right-6 bg-amber-500 text-white text-[10px] font-bold px-1.5 rounded-full hidden">0</span>
+      </button>
+
+    </div>
+  </nav>
+
+
+  <!-- ================================================================= -->
+  <!-- VOICE & AUDIO SETTINGS MODAL -->
+  <!-- ================================================================= -->
+  <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full border border-amber-200 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-scaleUp">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">👩‍🏫</span>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-royal-950">Audio & Voice Settings</h3>
+            <p class="text-[11px] text-slate-400 font-medium">Tuned for sweet, clear & bold Indian English articulation</p>
+          </div>
+        </div>
+        <button onclick="app.closeSettingsModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm">
+          ✕
+        </button>
+      </div>
+
+      <!-- Quick Tone Presets -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+          Voice Character Presets
+        </label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" onclick="app.selectVoicePreset('sweet')" id="presetSweetBtn"
+            class="p-2.5 rounded-2xl border-2 border-amber-400 bg-amber-50 text-amber-900 font-bold text-xs flex flex-col items-center text-center transition active:scale-95 shadow-sm">
+            <span class="text-xl mb-1">🌸</span>
+            <span>Sweet & Clear</span>
+            <span class="text-[9px] font-normal text-amber-700 mt-0.5">Gemini Style</span>
+          </button>
+          
+          <button type="button" onclick="app.selectVoicePreset('teacher')" id="presetTeacherBtn"
+            class="p-2.5 rounded-2xl border border-slate-200 bg-white text-slate-700 font-bold text-xs flex flex-col items-center text-center hover:border-amber-300 transition active:scale-95">
+            <span class="text-xl mb-1">👩‍🏫</span>
+            <span>Teacher Tone</span>
+            <span class="text-[9px] font-normal text-slate-500 mt-0.5">Bold & Articulate</span>
+          </button>
+
+          <button type="button" onclick="app.selectVoicePreset('standard')" id="presetStandardBtn"
+            class="p-2.5 rounded-2xl border border-slate-200 bg-white text-slate-700 font-bold text-xs flex flex-col items-center text-center hover:border-amber-300 transition active:scale-95">
+            <span class="text-xl mb-1">🎯</span>
+            <span>Official Bee</span>
+            <span class="text-[9px] font-normal text-slate-500 mt-0.5">Classic Cadence</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Voice Selector -->
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-700">
+            Selected Voice
+          </label>
+          <span id="detectedAccentBadge" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            en-IN Active
+          </span>
+        </div>
+        <select id="voiceSelect" onchange="app.handleVoiceChange(this.value)" 
+          class="w-full py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400">
+          <!-- Populated dynamically with grouped Indian Female options -->
+        </select>
+      </div>
+
+      <!-- Edge / Chrome AI Voice Tip Callout -->
+      <div class="bg-gradient-to-r from-amber-50 to-amber-100/70 p-3 rounded-2xl border border-amber-200 text-xs text-amber-950 flex items-start space-x-2.5">
+        <span class="text-xl flex-shrink-0">💡</span>
+        <div class="text-[11px] leading-relaxed">
+          <strong>Tip for ultra-realistic Gemini-like voice:</strong>
+          Opening this trainer in <strong>Microsoft Edge</strong> on your PC gives free access to <em>Microsoft Neerja (Natural)</em> and <em>Swara (Natural)</em>—they sound just like a real person, sweet, melodic, and bold!
+        </div>
+      </div>
+
+      <!-- Pitch / Natural Timbre Slider -->
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-700">
+            Voice Pitch / Timbre
+          </label>
+          <span id="pitchValueLabel" class="text-xs font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded-lg">
+            1.00x (Natural & Clear)
+          </span>
+        </div>
+        <input type="range" id="pitchSlider" min="0.8" max="1.2" step="0.05" value="1.00" 
+          oninput="app.handlePitchChange(this.value)"
+          class="w-full accent-amber-500 cursor-pointer" />
+        <div class="flex justify-between text-[10px] text-slate-400 font-bold px-1 mt-0.5">
+          <span>0.8x (Deeper)</span>
+          <span>1.00x (Natural Human Tone)</span>
+          <span>1.2x (Higher)</span>
+        </div>
+      </div>
+
+      <!-- Speech Speed Slider -->
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-700">
+            Pronunciation Speed
+          </label>
+          <span id="rateValueLabel" class="text-xs font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded-lg">
+            0.90x (Championship Clear)
+          </span>
+        </div>
+        <input type="range" id="rateSlider" min="0.6" max="1.2" step="0.05" value="0.90" 
+          oninput="app.handleRateChange(this.value)"
+          class="w-full accent-amber-500 cursor-pointer" />
+        <div class="flex justify-between text-[10px] text-slate-400 font-bold px-1 mt-0.5">
+          <span>0.6x (Very Slow)</span>
+          <span>0.90x (Championship Cadence)</span>
+          <span>1.2x (Fast)</span>
+        </div>
+      </div>
+
+      <!-- Sound FX Toggle -->
+      <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200">
+        <div>
+          <span class="text-xs font-bold text-slate-800 block">Sound Bell Chime & Fanfare</span>
+          <span class="text-[11px] text-slate-500">Audio cues for dictation focus</span>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="modalSfxToggle" checked onchange="app.handleSfxToggle(this.checked)" class="sr-only peer">
+          <div class="w-10 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+        </label>
+      </div>
+
+      <!-- Voice Testing Buttons -->
+      <div class="flex gap-2 pt-1">
+        <button onclick="app.testSpeechSentence()" 
+          class="flex-1 py-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold rounded-xl text-xs transition flex items-center justify-center space-x-1.5 active:scale-95">
+          <span>🌸</span>
+          <span>Sample Speech</span>
+        </button>
+        <button onclick="app.testSpeechSynthesis()" 
+          class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center justify-center space-x-1.5 active:scale-95">
+          <span>🔊</span>
+          <span>Test Word</span>
+        </button>
+        <button onclick="app.closeSettingsModal()" 
+          class="px-5 py-2.5 bg-royal-900 hover:bg-royal-950 text-white font-bold rounded-xl text-xs transition active:scale-95">
+          Done
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed top-5 right-5 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-[-10px] flex items-center space-x-2">
+    <span id="toastIcon">🐝</span>
+    <span id="toastMsg">Notification message</span>
+  </div>
+
+
+  <!-- App Scripts -->
+  <script src="js/words.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
